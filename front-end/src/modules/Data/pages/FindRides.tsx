@@ -83,7 +83,7 @@ const FindRides = () => {
     try {
       const fullDateTime = `${departureDate}T${departureTime}:00`;
 
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/travel/update`, {
+      await axios.put('/api/v1/travel/update', {
         userId,
         source,
         destination,
