@@ -147,7 +147,7 @@ const OTPValidation = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/otp/verify`, {
+      const response = await axios.post('/api/v1/otp/verify', {
         email,
         otp: otpCode,
         password,
@@ -196,7 +196,7 @@ const OTPValidation = () => {
     setResending(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/otp/send`, {
+      const response = await axios.post('/api/v1/otp/send', {
         email,
       });
 
