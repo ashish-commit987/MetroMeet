@@ -43,7 +43,7 @@ const Matches = () => {
           setUserName(storedName);
         }
 
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/match/find`, {
+        const res = await axios.get('/api/v1/match/find', {
           params: {
             source,
             destination,
