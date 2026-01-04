@@ -10,5 +10,5 @@ export const indexRoute = express.Router();
 indexRoute.use('/user', userRoutes);
 indexRoute.use('/otp', otpRoutes);
 indexRoute.use('/metro', auth, metroRoutes);
-indexRoute.use("/match", auth, matchRoutes);    // ✅ Protected
-indexRoute.use("/travel", auth, travelRoutes);  // ✅ Protected
+indexRoute.use("/match", auth, matchRoutes);    
+indexRoute.use("/travel", auth, travelRoutes);  
