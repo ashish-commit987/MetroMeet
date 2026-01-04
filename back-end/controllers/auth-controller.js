@@ -4,7 +4,7 @@ import { encryptPassword } from "../utils/services/password-hash.js";
 import { isAllowedDomain, isDisposable } from "../utils/services/email-check.js";
 import { canSendOtp, recordOtpAttempt, resetOtpRateLimit } from "../utils/services/otp-rate-limiter.js";
 
-// 1️⃣ Send OTP (User not created yet) - NOW WITH RATE LIMITING
+//Send OTP (User not created yet) - WITH RATE LIMITING
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -13,7 +13,7 @@ export const sendOtp = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // ✅ CHECK RATE LIMIT FIRST
+    //CHECK RATE LIMIT FIRST
     const rateLimitCheck = canSendOtp(email);
     if (!rateLimitCheck.allowed) {
       return res.status(429).json({ 
@@ -22,30 +22,30 @@ export const sendOtp = async (req, res) => {
       });
     }
 
-    // ✅ Check if email is disposable/temporary
+    //Check if email is disposable/temporary
     if (isDisposable(email)) {
       return res.status(400).json({
         message: "Temporary / Disposable email addresses are not allowed."
       });
     }
 
-    // ✅ Check if email provider is allowed
+    //Check if email provider is allowed
     if (!isAllowedDomain(email)) {
       return res.status(400).json({
         message: "Email provider not supported. Use valid mail providers like Gmail, Yahoo, Outlook, Hotmail, or ProtonMail."
       });
     }
 
-    // ✅ If user already exists -> stop registration
+    //If user already exists -> stop registration
     const existing = await userModel.findOne({ email }).exec();
     if (existing) {
       return res.status(409).json({ message: "Email already registered. Please login instead." });
     }
 
-    // ✅ Send OTP
+    //Send OTP
     await createAndSendOtp(email);
     
-    // ✅ RECORD THE ATTEMPT
+    //RECORD THE ATTEMPT
     recordOtpAttempt(email);
 
     res.status(200).json({ message: "OTP sent to your email" });
@@ -56,7 +56,7 @@ export const sendOtp = async (req, res) => {
 };
 
 
-// 2️⃣ Verify OTP & Register User (Dynamic fields allowed)
+//Verify OTP & Register User (Dynamic fields allowed)
 export const verifyOtpAndRegister = async (req, res) => {
   try {
     const userObject = req.body;
@@ -85,7 +85,7 @@ export const verifyOtpAndRegister = async (req, res) => {
     // Create new user with ALL dynamic fields
     const newUser = await userModel.create(userObject);
 
-    // ✅ RESET RATE LIMIT ON SUCCESSFUL VERIFICATION
+    //RESET RATE LIMIT ON SUCCESSFUL VERIFICATION
     resetOtpRateLimit(email);
 
     return res.status(200).json({
