@@ -19,7 +19,7 @@ export const login = async (userObject) => {
   try {
     const user = await userModel.findOne({ email: userObject.email }).exec();
 
-    // 1️⃣ User not found
+    //User not found
     if (!user) {
       return {
         success: false,
@@ -27,7 +27,7 @@ export const login = async (userObject) => {
       };
     }
 
-    // 2️⃣ Password incorrect
+    //Password incorrect
     const isMatch = compareHash(userObject.password, user.password);
 
     if (!isMatch) {
@@ -37,7 +37,7 @@ export const login = async (userObject) => {
       };
     }
 
-    // 3️⃣ Login success
+    //Login success
     const token = generateToken(user.email);
 
     return {
