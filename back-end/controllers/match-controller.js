@@ -10,7 +10,7 @@ export const findMatches = async (req, res) => {
     console.log("▶ Received userId:", userId);
     console.log("🔥 FULL QUERY:", req.query);
 
-    // 1) Basic validation
+    //Basic validation
     if (!source || !destination) {
       return res.status(400).json({ success: false, message: "Missing source/destination" });
     }
@@ -33,7 +33,7 @@ export const findMatches = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid departureTime" });
     }
 
-    // 2) Line detection
+    //Line detection
     const srcInfo = getLineOfStation(source);
     const dstInfo = getLineOfStation(destination);
 
@@ -44,7 +44,7 @@ export const findMatches = async (req, res) => {
       return res.json({ success: false, message: "Invalid station name" });
     }
 
-    // 3) Adjacent stations
+    //Adjacent stations
     const nearSource = getAdjacentStations(srcInfo.stations, source);
     const nearDestination = getAdjacentStations(dstInfo.stations, destination);
 
@@ -54,23 +54,23 @@ export const findMatches = async (req, res) => {
     console.log("📌 YOUR DEST:", destination);
     console.log("📌 nearDestination:", nearDestination);
 
-    // 4) Get current user's stored travel window
+    //Get current user's stored travel window
     const currentUser = await userModel.findById(userId);
     
     if (!currentUser) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // ✅ USE THE SEARCHER'S STORED WINDOW FROM DATABASE
-    // This is what they saved when they submitted their journey
+    //USE THE SEARCHER'S STORED WINDOW FROM DATABASE
+    //This is what they saved when they submitted their journey
     let searcherMinTime, searcherMaxTime;
 
     if (currentUser?.travel?.departureTime && currentUser?.travel?.expiresAt) {
       searcherMinTime = currentUser.travel.departureTime;
       searcherMaxTime = currentUser.travel.expiresAt;
-      console.log("✅ Using searcher's stored travel window from database");
+      console.log("Using searcher's stored travel window from database");
     } else {
-      console.log("❌ Current user has no stored travel data!");
+      console.log("Current user has no stored travel data!");
       return res.json({
         success: false,
         message: "Please submit your journey details first",
@@ -83,7 +83,7 @@ export const findMatches = async (req, res) => {
       searcherMaxTime: searcherMaxTime.toLocaleString('en-IN')
     });
 
-    // 5) Find reverse-route candidates (ignore time initially)
+    //Find reverse-route candidates (ignore time initially)
     const routeCandidates = await userModel.find({
       _id: { $ne: userId }, // Exclude the current user
       "travel.source": { $in: nearDestination },
@@ -94,7 +94,7 @@ export const findMatches = async (req, res) => {
 
     console.log("🔁 Reverse-route candidates (before time filtering):", routeCandidates.length);
 
-    // 6) Filter by overlapping time windows
+    //Filter by overlapping time windows
     const matches = routeCandidates.filter(candidate => {
       const candidateMinTime = candidate.travel.departureTime;
       const candidateMaxTime = candidate.travel.expiresAt;
@@ -114,7 +114,7 @@ export const findMatches = async (req, res) => {
 
     console.log("✅ Final matching users:", matches.length);
 
-    // 7) Clean up expired travels
+    //Clean up expired travels
     await userModel.updateMany(
       { "travel.expiresAt": { $lt: new Date() } },
       { $unset: { travel: "" } }
