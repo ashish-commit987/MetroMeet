@@ -16,8 +16,8 @@ export const updateTravelRoute = async (req, res) => {
       return res.status(400).json({ message: "Invalid departure time." });
     }
 
-    // ✅ FIX: Store the FULL wait window (both before and after departure time)
-    // If user selects 2:00 PM with 30 min wait, they can meet from 1:30 PM to 2:30 PM
+    //FIX: Store the FULL wait window (both before and after departure time)
+    //If user selects 2:00 PM with 30 min wait, they can meet from 1:30 PM to 2:30 PM
     const waitWindowMs = waitWindow * 60000;
     const windowStart = new Date(depTime.getTime() - waitWindowMs);
     const windowEnd = new Date(depTime.getTime() + waitWindowMs);
@@ -32,14 +32,14 @@ export const updateTravelRoute = async (req, res) => {
         travel: {
           source,
           destination,
-          departureTime: windowStart,  // ✅ Store window START (earliest time)
-          expiresAt: windowEnd          // ✅ Store window END (latest time)
+          departureTime: windowStart,  //Store window START (earliest time)
+          expiresAt: windowEnd          //Store window END (latest time)
         }
       },
       { new: true, runValidators: true }
     );
 
-    console.log("✅ UPDATED USER →", updated);
+    console.log("UPDATED USER →", updated);
 
     res.json({ 
       success: true, 
