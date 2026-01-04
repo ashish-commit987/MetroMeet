@@ -6,7 +6,7 @@ import { indexRoute } from './api/v1/routes/index.js';
 import { Error404 } from './utils/middlewares/404.js';
 import cors from 'cors';
 import { CreateConnection } from './utils/db/connection.js';
-import { startCleanupScheduler } from './cleanup-scheduler.js'; // ← ADD THIS
+import { startCleanupScheduler } from './cleanup-scheduler.js'; 
 
 const app = express();
 
@@ -29,7 +29,7 @@ promise.then(() => {
             console.log(chalk.redBright.italic('Server crash '), err);
         } else {
             console.log(chalk.greenBright.bold('Server Up and Running...'), server.address().port);
-            startCleanupScheduler(); // ← ADD THIS LINE
+            startCleanupScheduler(); 
         }
     });
 }).catch(err => {
