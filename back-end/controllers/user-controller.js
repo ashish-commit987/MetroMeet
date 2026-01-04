@@ -19,17 +19,17 @@ export const login=async (req,res)=>{
 export const register = async (req, res) => {
   console.log("Data rec ", req.body);
 
-  const userObject = req.body;  // ← dynamic fields
+  const userObject = req.body;  //dynamic fields
   const { email } = userObject;
 
-  // 1. Check disposable
+  // Check disposable
   if (isDisposable(email)) {
     return res.status(400).json({
       message: "Temporary / Disposable email addresses are not allowed."
     });
   }
 
-  // 2. Check allowed provider
+  // Check allowed provider
   if (!isAllowedDomain(email)) {
     return res.status(400).json({
       message:
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
   }
 
   try {
-    // 3. Prevent double registration
+    // Prevent double registration
     const existing = await userModel.findOne({ email });
     if (existing) {
       return res
@@ -46,12 +46,12 @@ export const register = async (req, res) => {
         .json({ message: "Email already registered. Please login." });
     }
 
-    // 4. Send OTP (but DO NOT create user here)
+    // Send OTP (but DO NOT create user here)
     await createAndSendOtp(email);
 
     return res.status(200).json({
       message: "OTP sent to your email. Please verify to complete registration.",
-      data: userObject // optional, helpful for frontend
+      data: userObject 
     });
   } catch (err) {
     console.log("Register Error:", err);
