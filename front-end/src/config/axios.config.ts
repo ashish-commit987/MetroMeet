@@ -9,6 +9,9 @@ export const apiClient = axios.create({
   },
 });
 
+console.log('Current VITE_API_URL:', import.meta.env.VITE_API_URL);
+
+
 // Add response interceptor for better error handling
 apiClient.interceptors.response.use(
   (response) => response,
