@@ -12,8 +12,8 @@ const app = express();
 
 app.use(cors({
   origin: [
-    'https://metro-meet.netlify.app', // Remove trailing slash for exact match
-    'http://localhost:5173', 
+    'https://metro-meet.netlify.app/', // Replace with your actual Netlify URL
+    'http://localhost:5173',
     'http://localhost:3000'
   ],
   credentials: true
@@ -24,8 +24,8 @@ app.use(Error404);
 
 const promise = CreateConnection();
 promise.then(() => {
-    const port = process.env.PORT || 7777;
-    const server = app.listen(port, '0.0.0.0', (err) => {
+    const server = app.listen(7777, (err) => {
+   
         if (err) {
             console.log(chalk.redBright.italic('Server crash '), err);
         } else {
